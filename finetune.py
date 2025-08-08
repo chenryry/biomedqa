@@ -105,19 +105,6 @@ trainer = SFTTrainer(
     eval_dataset=tokenized_dataset["test"],
 )
 trainer.train()
-
-corpus_embeddings = embedder.encode(contexts, convert_to_tensor=False, show_progress_bar=True)
-corpus_embeddings = np.array(corpus_embeddings)
-corpus_embeddings = corpus_embeddings / np.linalg.norm(corpus_embeddings, axis=1, keepdims=True)
-index = faiss.IndexFlatIP(corpus_embeddings.shape[1])
-index.add(corpus_embeddings)
-
-
-print("Biomedical Research Chatbot: Type 'exit' to quit.\n")
-while True:
-    user_input = input("Ask a biomedical question:\n")
-    if user_input.lower() in {"exit", "quit"}:
-        break
-    answer = generate_answer_rag(user_input)
-    print(f"\nAnswer: {answer}\n")
+model.save_pretrained("./gemma-pubmedqa-lora")
+tokenizer.save_pretrained("./gemma-pubmedqa-lora")
 
